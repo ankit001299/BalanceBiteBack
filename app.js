@@ -21,7 +21,18 @@ if (!JWT_SECRET || !MONGO_URI) {
 
 // ✅ MIDDLEWARE first
 app.use(express.json());
-app.use(cors());
+const allowedOrigins = ['https://balance-bite-front-sfjc.vercel.app/'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // If using cookies/auth
+}));
 
 // ✅ ROUTES after middleware
 app.use("/api/auth", authRoutes);
